@@ -2,13 +2,24 @@ provider "aws" {
   region = "us-west-2"
 }
 
+resource "aws_dynamodb_table" "students" {
+  name           = "students_table"
+  hash_key       = "id"
+  read_capacity  = 1
+  write_capacity = 1
+ 
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
 resource "aws_lambda_function" "students" {
   filename      = "students.zip"
   function_name = "students"
   role          = aws_iam_role.students.arn
-  handler       = "lambda_function.lambda_handler"
+  handler       = "students.lambda_handler"
   runtime       = "python3.8"
-  timeout       = 10
 }
 
 resource "aws_iam_role" "students" {
